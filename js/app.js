@@ -145,6 +145,9 @@ function addNewSection(title, content) {
   newSection.innerHTML = `
     <div class="landing__container">
       <h2>${title}</h2>
+      <button class="icon">
+            <i class="fa-solid fa-chevron-down fa-xl"></i>
+          </button>
       <p>${content}</p>
     </div>
   `;
@@ -248,3 +251,14 @@ const pageHeaderObserver = new IntersectionObserver(
 );
 
 pageHeaderObserver.observe(main);
+// ---------------------------------------
+
+//folding sections
+const btnIcons = document.querySelectorAll("button.icon");
+
+const foldSectionFn = function (e) {
+  const section = e.target.closest("section");
+  section.classList.toggle("section-folded");
+};
+
+btnIcons.forEach((btn) => btn.addEventListener("click", foldSectionFn));

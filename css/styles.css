@@ -436,3 +436,67 @@ button.scroll-to-top.show-btn {
   opacity: 1;
   visibility: visible;
 }
+
+section.section-folded p {
+  max-height: 0;
+  overflow: hidden;
+  animation: fold-content 0.3s ease-out forwards;
+}
+
+section.section-folded {
+  min-height: 50vh;
+}
+
+section:not(.section-folded) p {
+  animation: unfold-content 0.3s ease-out forwards;
+}
+
+@keyframes fold-content {
+  from {
+    max-height: auto;
+    visibility: visible;
+    opacity: 1;
+  }
+  to {
+    max-height: 0;
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@keyframes unfold-content {
+  from {
+    max-height: 0;
+    opacity: 0;
+    visibility: hidden;
+  }
+  to {
+    max-height: auto;
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+section .landing__container button.icon {
+  position: absolute;
+  top: 130px;
+  cursor: pointer;
+  border: 0;
+  background-color: transparent;
+  box-shadow: rgba(0, 0, 0, 0.3);
+}
+
+section:nth-child(odd) .landing__container button.icon {
+  left: 40%;
+}
+section:nth-child(even) .landing__container button.icon {
+  left: 52%;
+}
+
+section .landing__container button.icon i {
+  transition: transform 0.3s ease;
+}
+
+section.section-folded .landing__container button.icon i {
+  transform: rotate(180deg);
+}
