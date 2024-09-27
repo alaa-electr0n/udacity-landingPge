@@ -1,62 +1,250 @@
+"use strict";
+
+//steps: 1- on Click on Add Section button => display dialog box
+//steps: 2- take the form values an turn it into a new section
+//steps: 3- add the new section to the DOM
+//steps: 4- add the new section to the navigation
+//steps: 5- use Intersection observer to scroll smoothly to the section, and add active class to the section and the active    navbar item[done]
+//steps: 6- user intersection api to add scroll to top button that scroll back to the top of the page [done]
+//steps: 7- make section collapsable to hide the content on button click and reveal the content on button click
+//steps: 8- hide the navbar on stop scrolling
+//steps: 9- make te navbar responsive
 /**
- * 
+ *
  * Manipulating the DOM exercise.
  * Exercise programmatically builds navigation,
  * scrolls to anchors from navigation,
  * and highlights section in viewport upon scrolling.
- * 
+ *
  * Dependencies: None
- * 
+ *
  * JS Version: ES2015/ES6
- * 
+ *
  * JS Standard: ESlint
- * 
-*/
+ *
+ */
 
 /**
  * Comments should be present at the beginning of each procedure and class.
  * Great to have comments before crucial code sections within the procedure.
-*/
+ */
 
 /**
  * Define Global Variables
- * 
-*/
+ *
+ */
+// ---------------------------------------------------------------------------------------
+const btnAddSection = document.getElementById("add");
+const modal = document.getElementById("modal");
+const btnCloseModal = document.querySelector(".btn__close");
 
+//1-  show and hide modal
 
-/**
- * End Global Variables
- * Start Helper Functions
- * 
-*/
+btnAddSection.addEventListener("click", function () {
+  modal.showModal();
+});
 
+btnCloseModal.addEventListener("click", function () {
+  modal.close();
+});
 
+//TODO: add the logic of when click outside the modal, it will close the modal
 
-/**
- * End Helper Functions
- * Begin Main Functions
- * 
-*/
+const clickOutsideModalFn = function (e) {
+  const dialogDimensions = modal.getBoundingClientRect();
+  if (
+    e.clientX < dialogDimensions.left ||
+    e.clientX > dialogDimensions.right ||
+    e.clientY < dialogDimensions.top ||
+    e.clientY > dialogDimensions.bottom
+  ) {
+    modal.close();
+  }
+};
 
-// build the nav
+modal.addEventListener("click", clickOutsideModalFn);
 
+const menuNavBar = document.querySelector(".navbar__menu");
+const menuList = document.querySelector(".navbar__menu ul");
 
-// Add class 'active' to section when near top of viewport
+//select the exsiting Section
+const sections = document.querySelectorAll("section");
 
+//<li><a class="menu__link" href="#section1">Section 1</a></li>//
 
-// Scroll to anchor ID using scrollTO event
+//create a new li element
 
+sections.forEach((section) => {
+  const id = section.id;
+  const dataNav = section.dataset.nav;
+  const itemHtml = `<li><a class="menu__link" href="#${id}">${dataNav}</a></li>`;
+  menuList.innerHTML += itemHtml;
+});
 
-/**
- * End Main Functions
- * Begin Events
- * 
-*/
+// observing the section by using the intersection Observer API
 
-// Build menu 
+const observeSectionsFn = function (entries, observer) {
+  entries.forEach((entry) => {
+    const activeLink = document.querySelector(
+      `.navbar__menu li a[href*="${entry.target.id}"]`
+    );
+    entry.target.classList.remove("your-active-class");
+    activeLink.classList.remove("active__link");
 
-// Scroll to section on link click
+    if (!entry.isIntersecting) return;
 
-// Set sections as active
+    if (entry.isIntersecting) {
+      entry.target.classList.add("your-active-class");
+      activeLink.classList.add("active__link");
+    }
+  });
+};
 
+const sectionOptions = {
+  root: null,
+  threshold: 0.5,
+};
 
+const sectionObserver = new IntersectionObserver(
+  observeSectionsFn,
+  sectionOptions
+);
+
+sections.forEach((section) => {
+  sectionObserver.observe(section);
+});
+
+//smooth scrolling to the section when click on the navbar
+menuList.addEventListener("click", function (e) {
+  e.preventDefault();
+  if (e.target.classList.contains("menu__link")) {
+    const id = e.target.getAttribute("href");
+    document.querySelector(id).scrollIntoView({ behavior: "smooth" });
+  }
+});
+
+// Responsive controlling
+const btnMenuOpen = document.querySelector(".menu-bars");
+const btnMenuClose = document.querySelector(".menu-close");
+
+const controlMenu = function () {
+  menuNavBar.classList.toggle("show-nav");
+};
+
+btnMenuOpen.addEventListener("click", controlMenu);
+btnMenuClose.addEventListener("click", controlMenu);
+
+// Function to add a new section and corresponding nav item
+function addNewSection(title, content) {
+  // Create new section
+  const newSection = document.createElement("section");
+  const sectionId = `section${document.querySelectorAll("section").length + 1}`;
+  newSection.id = sectionId;
+  newSection.setAttribute("data-nav", title);
+
+  newSection.innerHTML = `
+    <div class="landing__container">
+      <h2>${title}</h2>
+      <p>${content}</p>
+    </div>
+  `;
+
+  // Add new section to the DOM
+  document.querySelector("main").appendChild(newSection);
+
+  // Create new nav item
+  const newNavItem = document.createElement("li");
+  newNavItem.innerHTML = `<a class="menu__link" href="#${sectionId}">${title}</a>`;
+
+  // Add new nav item to the menu
+  menuList.appendChild(newNavItem);
+
+  // Observe the new section
+  sectionObserver.observe(newSection);
+}
+
+// Handle form submission
+modal.querySelector("form").addEventListener("submit", function (e) {
+  e.preventDefault();
+  const title = this.querySelector("#section-title").value;
+  const content = this.querySelector("#section-content").value;
+  addNewSection(title, content);
+  modal.close();
+  this.reset();
+});
+
+// ... (rest of the code remains the same)
+
+// showing the scroll to top button
+const btnScrollToTop = document.querySelector(".scroll-to-top");
+
+const rootElement = document.documentElement;
+
+function handleScroll() {
+  const scrollTotal = rootElement.scrollHeight - window.innerHeight;
+  const scrollPosition = window.scrollY || rootElement.scrollTop;
+
+  if (scrollPosition / scrollTotal > 0.5) {
+    btnScrollToTop.classList.add("show-btn");
+  } else {
+    btnScrollToTop.classList.remove("show-btn");
+  }
+}
+
+window.addEventListener("scroll", handleScroll);
+// scroll to top
+function scrollToTop() {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+}
+btnScrollToTop.addEventListener("click", scrollToTop);
+
+// -------------------------------------------------------------------
+// Header visibility control
+const pageHeader = document.querySelector(".page__header");
+let scrollTimeout;
+
+function showHeader() {
+  pageHeader.classList.remove("header-disappear");
+}
+
+function hideHeader() {
+  if (window.scrollY > 0) {
+    pageHeader.classList.add("header-disappear");
+  }
+}
+
+window.addEventListener("scroll", () => {
+  showHeader();
+  clearTimeout(scrollTimeout);
+  scrollTimeout = setTimeout(hideHeader, 3000);
+});
+
+// Intersection Observer for header
+const main = document.querySelector("main");
+
+const headerObserveFn = function (entries) {
+  entries.forEach((entry) => {
+    if (!entry.isIntersecting) {
+      pageHeader.classList.add("header-scrolled");
+    } else {
+      pageHeader.classList.remove("header-scrolled");
+      showHeader();
+    }
+  });
+};
+
+const headerObserverOptions = {
+  root: null,
+  threshold: 0,
+  rootMargin: "-1px 0px 0px 0px",
+};
+
+const pageHeaderObserver = new IntersectionObserver(
+  headerObserveFn,
+  headerObserverOptions
+);
+
+pageHeaderObserver.observe(main);
