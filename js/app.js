@@ -1,14 +1,14 @@
 "use strict";
 
-//steps: 1- on Click on Add Section button => display dialog box
-//steps: 2- take the form values an turn it into a new section
-//steps: 3- add the new section to the DOM
-//steps: 4- add the new section to the navigation
-//steps: 5- use Intersection observer to scroll smoothly to the section, and add active class to the section and the active    navbar item[done]
+//steps: 1- on Click on Add Section button => display dialog box  [done]
+//steps: 2- take the form values an turn it into a new section  [done]
+//steps: 3- add the new section to the DOM  [done]
+//steps: 4- add the new section to the navigation  [done]
+//steps: 5- use Intersection observer to scroll smoothly to the section, and add active class to the section and the active    navbar item [done]
 //steps: 6- user intersection api to add scroll to top button that scroll back to the top of the page [done]
-//steps: 7- make section collapsable to hide the content on button click and reveal the content on button click
-//steps: 8- hide the navbar on stop scrolling
-//steps: 9- make te navbar responsive
+//steps: 7- make section collapsable to hide the content on button click and reveal the content on button click  [done]
+//steps: 8- hide the navbar on stop scrolling  [done]
+//steps: 9- make te navbar responsive  [done]
 /**
  *
  * Manipulating the DOM exercise.
