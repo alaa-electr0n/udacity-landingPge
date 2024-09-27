@@ -9,34 +9,27 @@
 //steps: 7- make section collapsable to hide the content on button click and reveal the content on button click  [done]
 //steps: 8- hide the navbar on stop scrolling  [done]
 //steps: 9- make te navbar responsive  [done]
-/**
- *
- * Manipulating the DOM exercise.
- * Exercise programmatically builds navigation,
- * scrolls to anchors from navigation,
- * and highlights section in viewport upon scrolling.
- *
- * Dependencies: None
- *
- * JS Version: ES2015/ES6
- *
- * JS Standard: ESlint
- *
- */
 
-/**
- * Comments should be present at the beginning of each procedure and class.
- * Great to have comments before crucial code sections within the procedure.
- */
-
-/**
- * Define Global Variables
- *
- */
 // ---------------------------------------------------------------------------------------
+// Global Variables
+
 const btnAddSection = document.getElementById("add");
 const modal = document.getElementById("modal");
 const btnCloseModal = document.querySelector(".btn__close");
+const menuNavBar = document.querySelector(".navbar__menu");
+const menuList = document.querySelector(".navbar__menu ul");
+
+//select the exsiting Section
+const sections = document.querySelectorAll("section");
+
+const btnMenuOpen = document.querySelector(".menu-bars");
+const btnMenuClose = document.querySelector(".menu-close");
+const btnScrollToTop = document.querySelector(".scroll-to-top");
+const btnIcons = document.querySelectorAll("button.icon");
+const rootElement = document.documentElement;
+const pageHeader = document.querySelector(".page__header");
+const main = document.querySelector("main");
+let scrollTimeout;
 
 //1-  show and hide modal
 
@@ -63,12 +56,6 @@ const clickOutsideModalFn = function (e) {
 };
 
 modal.addEventListener("click", clickOutsideModalFn);
-
-const menuNavBar = document.querySelector(".navbar__menu");
-const menuList = document.querySelector(".navbar__menu ul");
-
-//select the exsiting Section
-const sections = document.querySelectorAll("section");
 
 //<li><a class="menu__link" href="#section1">Section 1</a></li>//
 
@@ -123,9 +110,8 @@ menuList.addEventListener("click", function (e) {
   }
 });
 
+//----------------------------------------------------------
 // Responsive controlling
-const btnMenuOpen = document.querySelector(".menu-bars");
-const btnMenuClose = document.querySelector(".menu-close");
 
 const controlMenu = function () {
   menuNavBar.classList.toggle("show-nav");
@@ -176,12 +162,8 @@ modal.querySelector("form").addEventListener("submit", function (e) {
   this.reset();
 });
 
-// ... (rest of the code remains the same)
-
+// -------------------------------------------------------------------
 // showing the scroll to top button
-const btnScrollToTop = document.querySelector(".scroll-to-top");
-
-const rootElement = document.documentElement;
 
 function handleScroll() {
   const scrollTotal = rootElement.scrollHeight - window.innerHeight;
@@ -206,14 +188,13 @@ btnScrollToTop.addEventListener("click", scrollToTop);
 
 // -------------------------------------------------------------------
 // Header visibility control
-const pageHeader = document.querySelector(".page__header");
-let scrollTimeout;
 
 function showHeader() {
   pageHeader.classList.remove("header-disappear");
 }
 
 function hideHeader() {
+  //make the header always visible on the top of the page,
   if (window.scrollY > 0) {
     pageHeader.classList.add("header-disappear");
   }
@@ -225,17 +206,10 @@ window.addEventListener("scroll", () => {
   scrollTimeout = setTimeout(hideHeader, 3000);
 });
 
-// Intersection Observer for header
-const main = document.querySelector("main");
-
+// Intersection Observer for header the header intersecting with the main sections show the header
 const headerObserveFn = function (entries) {
   entries.forEach((entry) => {
-    if (!entry.isIntersecting) {
-      pageHeader.classList.add("header-scrolled");
-    } else {
-      pageHeader.classList.remove("header-scrolled");
-      showHeader();
-    }
+    if (entry.isIntersecting) showHeader();
   });
 };
 
@@ -254,7 +228,6 @@ pageHeaderObserver.observe(main);
 // ---------------------------------------
 
 //folding sections
-const btnIcons = document.querySelectorAll("button.icon");
 
 const foldSectionFn = function (e) {
   const section = e.target.closest("section");
