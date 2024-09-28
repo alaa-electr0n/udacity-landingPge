@@ -68,38 +68,43 @@ sections.forEach((section) => {
   menuList.innerHTML += itemHtml;
 });
 
-// observing the section by using the intersection Observer API
+// using getBoundClientRect to observe sections dimensions.
+const activateSections = function () {
+  //get my scroll position
+  const scrollPosition = window.scrollY;
 
-const observeSectionsFn = function (entries, observer) {
-  entries.forEach((entry) => {
-    const activeLink = document.querySelector(
-      `.navbar__menu li a[href*="${entry.target.id}"]`
-    );
-    entry.target.classList.remove("your-active-class");
-    activeLink.classList.remove("active__link");
+  //get sections dimensions
+  sections.forEach((section) => {
+    const sectionDimensions = section.getBoundingClientRect();
+    //get the distance from the top of the viewport to the top of the section
+    const sectionTop = sectionDimensions.top + scrollPosition;
+    // the distance from the top of the viewport + the top of the section+ the bottom of the section
+    const sectionBottom = sectionTop + sectionDimensions.height;
 
-    if (!entry.isIntersecting) return;
+    if (
+      scrollPosition + window.innerHeight / 2 > sectionTop &&
+      scrollPosition + window.innerHeight / 2 < sectionBottom
+    ) {
+      // Remove active class from all sections and nav items
+      sections.forEach((section) =>
+        section.classList.remove("your-active-class")
+      );
+      document
+        .querySelectorAll(".navbar__menu .menu__link")
+        .forEach((link) => link.classList.remove("active__link"));
 
-    if (entry.isIntersecting) {
-      entry.target.classList.add("your-active-class");
-      activeLink.classList.add("active__link");
+      // Add active class to current section and corresponding nav item
+      section.classList.add("your-active-class");
+      const correspondingNavItem = document.querySelector(
+        `.navbar__menu .menu__link[href="#${section.id}"]`
+      );
+      if (correspondingNavItem) {
+        correspondingNavItem.classList.add("active__link");
+      }
     }
   });
 };
-
-const sectionOptions = {
-  root: null,
-  threshold: 0.5,
-};
-
-const sectionObserver = new IntersectionObserver(
-  observeSectionsFn,
-  sectionOptions
-);
-
-sections.forEach((section) => {
-  sectionObserver.observe(section);
-});
+window.addEventListener("scroll", activateSections);
 
 //smooth scrolling to the section when click on the navbar
 menuList.addEventListener("click", function (e) {

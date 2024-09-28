@@ -501,13 +501,14 @@ section.section-folded .landing__container button.icon i {
   transform: rotate(180deg);
 }
 
-@media screen and (max-width: 350px) {
-  section .landing__container button.icon {
-    top: 75px;
-  }
-}
-@media screen and (max-width: 768px) {
+@media screen and (min-width: 571px) and (max-width: 768px) {
   section .landing__container button.icon {
     top: 120px;
+  }
+}
+
+@media screen and (max-width: 570px) {
+  section .landing__container button.icon {
+    top: 75px;
   }
 }
